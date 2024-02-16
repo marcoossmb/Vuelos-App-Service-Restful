@@ -20,7 +20,7 @@ class PasajesModel extends DB {
             $statement2 = $this->conexion->query($sql2);
             $registros2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
 
-            $sql3 = "SELECT identificador FROM $this->table GROUP BY identificador;";
+            $sql3 = "SELECT pa.identificador, v.aeropuertoorigen, v.aeropuertodestino FROM pasaje pa JOIN vuelo v ON pa.identificador = v.identificador GROUP BY identificador;";
             $statement3 = $this->conexion->query($sql3);
             $registros3 = $statement3->fetchAll(PDO::FETCH_ASSOC);
 
@@ -73,9 +73,9 @@ class PasajesModel extends DB {
             $sentencia->bindParam(1, $pasajeno);
             $sentencia->execute();
             if ($sentencia->rowCount() == 0)
-                return "Registro NO Borrado, no se localiza: " . $pasajeno;
+                return false;
             else
-                return "Registro Borrado: " . $pasajeno;
+                return true;
         } catch (PDOException $e) {
             return "ERROR AL BORRAR.<br>" . $e->getMessage();
         }
