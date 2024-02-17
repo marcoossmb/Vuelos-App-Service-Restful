@@ -20,7 +20,7 @@ class PasajesModel extends DB {
             $statement2 = $this->conexion->query($sql2);
             $registros2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
 
-            $sql3 = "SELECT pa.identificador, v.aeropuertoorigen, v.aeropuertodestino FROM pasaje pa JOIN vuelo v ON pa.identificador = v.identificador GROUP BY identificador;";
+            $sql3 = "SELECT identificador, aeropuertoorigen, aeropuertodestino FROM vuelo";
             $statement3 = $this->conexion->query($sql3);
             $registros3 = $statement3->fetchAll(PDO::FETCH_ASSOC);
 
@@ -123,7 +123,7 @@ class PasajesModel extends DB {
             if ($stmt_update->rowCount() > 0) {
                 return "REGISTRO ACTUALIZADO CORRECTAMENTE";
             } else {
-                return "ERROR AL ACTUALIZAR. No se encontró el pasaje a actualizar";
+                return "ERROR AL ACTUALIZAR. NO SE ENCONTRO EL PASAJE AL ACTUALIZAR";
             }
         } catch (PDOException $e) {
             return "ERROR SQL al actualizar: " . $e->getMessage();
