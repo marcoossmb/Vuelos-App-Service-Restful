@@ -129,4 +129,27 @@ class PasajesModel extends DB {
             return "ERROR SQL al actualizar: " . $e->getMessage();
         }
     }
+
+    public function getPasajesPorIdentificador($nupasaje) {
+        try {
+            $sql1 = "SELECT * FROM pasaje WHERE identificador = ?;";
+            $sentencia1 = $this->conexion->prepare($sql1);
+            $sentencia1->bindParam(1, $nupasaje);
+            $sentencia1->execute();
+            $registros1 = $sentencia1->fetchAll(PDO::FETCH_ASSOC);
+            
+            $sql2 = "SELECT ps.* FROM pasaje p JOIN pasajero ps ON p.pasajerocod = ps.pasajerocod WHERE p.identificador = ?;";
+            $sentencia2 = $this->conexion->prepare($sql2);
+            $sentencia2->bindParam(1, $nupasaje);
+            $sentencia2->execute();
+            $registros2 = $sentencia2->fetchAll(PDO::FETCH_ASSOC);
+            
+            if ($registros1 && $registros2) {
+                return array("registros1" => $registros1, "registros2" => $registros2);
+            }
+            return false;
+        } catch (PDOException $e) {
+            return "ERROR AL CARGAR.<br>" . $e->getMessage();
+        }
+    }
 }

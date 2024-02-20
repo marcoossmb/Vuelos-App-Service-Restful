@@ -13,6 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $res = $pasaje->getUnPasaje($_GET['id']);
         echo json_encode($res);
         exit();
+    } elseif (isset($_GET['identificador'])) {
+        $res = $pasaje->getPasajesPorIdentificador($_GET['identificador']);
+        echo json_encode($res);
+        exit();
     } else {
         $res = $pasaje->getAll();
         echo json_encode($res);
