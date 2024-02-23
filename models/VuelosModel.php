@@ -1,16 +1,25 @@
 <?php
 
+// Definición de la clase VuelosModel, que extiende de DB
 class VuelosModel extends DB {
 
+    // Declaración de propiedades privadas
     private $table;
     private $conexion;
 
+    // Constructor de la clase
     public function __construct() {
         $this->table = "vuelo";
         $this->conexion = $this->getConexion();
     }
 
-    // Devuelve un array departamento
+    /**
+     * Método para obtener los detalles de un vuelo específico por su identificador
+     *
+     * @param string $nuvuel Identificador del vuelo
+     * @return array|string Retorna un array con los detalles del vuelo si se encuentra,
+     * "SIN DATOS" si no se encuentra información o un mensaje de error en caso contrario.
+     */
     public function getUnVuelo($nuvuel) {
         try {
             $sql = "SELECT v.identificador, ao.codaeropuerto AS 'aeroorigen', ao.nombre AS 'aeronameorigen', ao.pais AS 'paisorigen',
@@ -31,6 +40,12 @@ class VuelosModel extends DB {
         }
     }
 
+    /**
+     * Método para obtener todos los vuelos con sus detalles
+     *
+     * @return array|string Retorna un array con los detalles de todos los vuelos si se encuentran,
+     * o un mensaje de error en caso contrario.
+     */
     public function getAll() {
         try {
             $sql = "SELECT v.identificador, ao.codaeropuerto AS 'aeroorigen', ao.nombre AS 'aeronameorigen', ao.pais AS 'paisorigen',
@@ -38,7 +53,7 @@ class VuelosModel extends DB {
                     FROM vuelo v JOIN aeropuerto ao ON v.aeropuertoorigen = ao.codaeropuerto JOIN aeropuerto ae 
                     ON v.aeropuertodestino = ae.codaeropuerto LEFT JOIN pasaje p ON v.identificador = p.identificador 
                     GROUP BY v.identificador;";
-            
+
             $statement = $this->conexion->query($sql);
             $registros = $statement->fetchAll(PDO::FETCH_ASSOC);
             $statement = null;

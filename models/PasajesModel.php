@@ -1,17 +1,27 @@
 <?php
 
+// Definición de la clase PasajesModel, que extiende de DB
 class PasajesModel extends DB {
 
+    // Declaración de propiedades privadas
     private $table;
     private $conexion;
 
+    // Constructor de la clase
     public function __construct() {
         $this->table = "pasaje";
         $this->conexion = $this->getConexion();
     }
 
+    /**
+     * Método para obtener todos los pasajes
+     *
+     * @return array|string Retorna un array con los registros de pasajes si la consulta es exitosa,
+     * o un mensaje de error si ocurre algún problema.
+     */
     public function getAll() {
         try {
+            // Consultas SQL para obtener registros de diferentes tablas relacionadas            
             $sql1 = "SELECT p.*, per.nombre FROM $this->table p JOIN pasajero per ON p.pasajerocod = per.pasajerocod ORDER BY p.idpasaje;";
             $statement1 = $this->conexion->query($sql1);
             $registros1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
@@ -31,9 +41,16 @@ class PasajesModel extends DB {
         }
     }
 
-    // Devuelve un array departamento
+    /**
+     * Método para obtener un pasaje específico por su número de pasaje
+     *
+     * @param string $nupasaje Número de pasaje a buscar
+     * @return array|string Retorna un array con los datos del pasaje si se encuentra,
+     * o un mensaje de error si ocurre algún problema.
+     */
     public function getUnPasaje($nupasaje) {
         try {
+            // Consulta SQL para obtener un pasaje específico            
             $sql = "SELECT * FROM $this->table WHERE idpasaje=?";
             $sentencia = $this->conexion->prepare($sql);
             $sentencia->bindParam(1, $nupasaje);
@@ -48,6 +65,14 @@ class PasajesModel extends DB {
         }
     }
 
+    /**
+     * Función privada para realizar comprobaciones antes de insertar o actualizar un pasaje
+     *
+     * @param string $pasajerocod Código del pasajero
+     * @param string $identificador Identificador del vuelo
+     * @param int $numasiento Número de asiento
+     * @return array Resultados de las comprobaciones
+     */
     private function comprobaciones($pasajerocod, $identificador, $numasiento) {
         $resultados = [];
 
@@ -66,6 +91,12 @@ class PasajesModel extends DB {
         return $resultados;
     }
 
+    /**
+     * Método para borrar un pasaje por su número de pasaje
+     *
+     * @param int $pasajeno Número de pasaje a borrar
+     * @return bool|string Retorna true si el borrado es exitoso, false si no se encuentra el pasaje o un mensaje de error en caso contrario.
+     */
     public function borrar($pasajeno) {
         try {
             $sql = "DELETE FROM $this->table WHERE idpasaje = ?";
@@ -81,6 +112,12 @@ class PasajesModel extends DB {
         }
     }
 
+    /**
+     * Método para insertar un nuevo pasaje
+     *
+     * @param array $post Datos del pasaje a guardar
+     * @return string Mensaje de éxito o error al guardar el pasaje
+     */
     public function guardar($post) {
         try {
             $comprobaciones = $this->comprobaciones($post['pasajerocod'], $post['identificador'], $post['numasiento']);
@@ -103,6 +140,13 @@ class PasajesModel extends DB {
         }
     }
 
+    /**
+     * Método para actualizar un pasaje existente
+     *
+     * @param array $put Datos actualizados del pasaje
+     * @param int $idpasaje ID del pasaje a actualizar
+     * @return string Mensaje de éxito o error al actualizar el pasaje
+     */
     public function actualiza($put, $idpasaje) {
         try {
             $comprobaciones = $this->comprobaciones($put['pasajerocod'], $put['identificador'], $put['numasiento']);
@@ -130,6 +174,13 @@ class PasajesModel extends DB {
         }
     }
 
+    /**
+     * Método para obtener pasajes por su identificador de vuelo
+     *
+     * @param string $nupasaje Identificador de vuelo
+     * @return array|bool|string Retorna un array con los registros de pasajes si se encuentran,
+     * false si no se encuentran registros o un mensaje de error en caso contrario.
+     */
     public function getPasajesPorIdentificador($nupasaje) {
         try {
             $sql1 = "SELECT * FROM pasaje WHERE identificador = ?;";
@@ -137,13 +188,13 @@ class PasajesModel extends DB {
             $sentencia1->bindParam(1, $nupasaje);
             $sentencia1->execute();
             $registros1 = $sentencia1->fetchAll(PDO::FETCH_ASSOC);
-            
+
             $sql2 = "SELECT ps.* FROM pasaje p JOIN pasajero ps ON p.pasajerocod = ps.pasajerocod WHERE p.identificador = ?;";
             $sentencia2 = $this->conexion->prepare($sql2);
             $sentencia2->bindParam(1, $nupasaje);
             $sentencia2->execute();
             $registros2 = $sentencia2->fetchAll(PDO::FETCH_ASSOC);
-            
+
             if ($registros1 && $registros2) {
                 return array("registros1" => $registros1, "registros2" => $registros2);
             }

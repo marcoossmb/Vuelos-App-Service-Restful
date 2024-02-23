@@ -1,13 +1,15 @@
 <?php
 
+// Incluir base de datos y el modelo del pasajero
 require_once ('./db/DB.php');
 require_once ('./models/PasajerosModel.php');
+
 $pasajeros = new PasajerosModel();
 
+// Establecer la cabecera de la respuesta como JSON
 @header("Content-type: application/json");
 
 // Consultar GET
-// devuelve o 1 o todos, dependiendo si recibe o no parámetro
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $res = $pasajeros->getAll();
     echo json_encode($res);

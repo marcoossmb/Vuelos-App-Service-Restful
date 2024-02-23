@@ -1,9 +1,11 @@
 <?php
 
+// Incluir base de datos y el modelo del pasaje
 require_once ('./db/DB.php');
 require_once ('./models/PasajesModel.php');
 $pasaje = new PasajesModel();
 
+// Establecer la cabecera de la respuesta como JSON
 @header("Content-type: application/json");
 
 // Consultar GET
@@ -34,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
 }
 
 // Crear un nuevo reg POST
-// Los campos del array que venga se deberán llamar como los campos de la tabla Departamentos
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // se cargan toda la entrada que venga en php://input
     $post = json_decode(file_get_contents('php://input'), true);
@@ -45,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Actualizar PUT, se reciben los datoc como en el put
-// Los campos del array que venga se deberán llamar como los campos de la tabla Departamentos
 if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     if (isset($_GET['id'])) {
         $put = json_decode(file_get_contents('php://input'), true);

@@ -1,8 +1,10 @@
 <?php
+// Incluir base de datos y el modelo del vuelo
 require_once ('./db/DB.php');
 require_once ('./models/VuelosModel.php');
 $vuel = new VuelosModel();
 
+// Establecer la cabecera de la respuesta como JSON
 @header("Content-type: application/json");
 
 // Consultar GET
